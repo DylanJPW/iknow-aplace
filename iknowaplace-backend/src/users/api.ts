@@ -60,7 +60,6 @@ usersRouter.post('/', (req, res) => {
     password,
     createdAt: new Date(),
   };
-  nextId += 1;
 
   users.push(user);
   res.status(201).json(user);
