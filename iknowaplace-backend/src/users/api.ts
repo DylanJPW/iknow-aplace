@@ -18,6 +18,7 @@ const users: User[] = [
     createdAt: new Date(),
   }
 ];
+let nextId = 1;
 
 export const usersRouter = Router();
 
@@ -33,4 +34,55 @@ usersRouter.get('/:id', (req, res) => {
   } else {
     res.status(404).json({error: 'User not found'});
   }
+});
+
+usersRouter.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = users.findIndex(user => user.id === id);
+  if (index !== -1) {
+    users.splice(index, 1);
+    res.status(204).json({message: 'User deleted'});
+  } else {
+    res.status(404).json({error: 'User not found'});
+  }
+});
+
+usersRouter.post('/', (req, res) => {
+  const { username, email, password } = req.body;
+
+  const usernameTrimmed = username.trim();
+  const emailTrimmed = email.trim();
+
+  const user: User = {
+    id: nextId++,
+    username: usernameTrimmed,
+    email: emailTrimmed,
+    password,
+    createdAt: new Date(),
+  };
+  nextId += 1;
+
+  users.push(user);
+  res.status(201).json(user);
+});
+
+usersRouter.patch('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const user = users.find(user => user.id === id);
+  if (!user) {
+    res.status(400).json({error: 'Invalid user id'});
+    return;
+  }
+
+  const { username, email, password } = req.body ?? {};
+  if (username) {
+    user.username = username.trim();
+  }
+  if (email) {
+    user.email = email.trim();
+  }
+  if (password) {
+    user.password = password;
+  }
+  res.status(200).json(user);
 });
