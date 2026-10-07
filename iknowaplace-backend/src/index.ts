@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import {usersRouter} from "./users/api.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -13,6 +14,7 @@ app.use(express.json());
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
+app.use("/api/users", usersRouter);
 
 // Start the server
 app.listen(PORT, () => {
