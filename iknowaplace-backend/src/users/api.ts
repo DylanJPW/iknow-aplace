@@ -48,7 +48,12 @@ usersRouter.delete('/:id', (req, res) => {
 });
 
 usersRouter.post('/', (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password } = req.body ?? {};
+
+  if (!username || !email || !password) {
+    res.status(400).json({error: 'Missing required fields'});
+    return;
+  }
 
   const usernameTrimmed = username.trim();
   const emailTrimmed = email.trim();
@@ -69,7 +74,7 @@ usersRouter.patch('/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const user = users.find(user => user.id === id);
   if (!user) {
-    res.status(400).json({error: 'Invalid user id'});
+    res.status(404).json({error: 'User not found'});
     return;
   }
 
